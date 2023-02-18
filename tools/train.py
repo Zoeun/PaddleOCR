@@ -42,13 +42,13 @@ dist.get_world_size()
 
 
 def main(config, device, logger, vdl_writer):
-    # init dist environment
+    # init dist environment,初始化分布式的环境
     if config['Global']['distributed']:
         dist.init_parallel_env()
 
-    global_config = config['Global']
+    global_config = config['Global'] #将yml文件中Global的信息存到变量中去
 
-    # build dataloader
+    # build dataloader,初始化训练数据加载器
     train_dataloader = build_dataloader(config, 'Train', device, logger)
     if len(train_dataloader) == 0:
         logger.error(
@@ -58,19 +58,21 @@ def main(config, device, logger, vdl_writer):
             "\t2. The annotation file and path in the configuration file are provided normally."
         )
         return
-
+    
+    # 初始化评估数据加载器
     if config['Eval']:
         valid_dataloader = build_dataloader(config, 'Eval', device, logger)
     else:
         valid_dataloader = None
 
-    # build post process
+    # build post process,初始化后处理函数，来自yml中的PostProcess变量
     post_process_class = build_post_process(config['PostProcess'],
                                             global_config)
 
-    # build model
-    # for rec algorithm
-    if hasattr(post_process_class, 'character'):
+    # build model,初始化模型
+    # for rec algorithm  对于目标检测算法
+    # hasattr() 函数用于判断对象是否包含对应的属性。
+    if hasattr(post_process_class, 'cfaracter'):
         char_num = len(getattr(post_process_class, 'character'))
         if config['Architecture']["algorithm"] in ["Distillation",
                                                    ]:  # distillation model
