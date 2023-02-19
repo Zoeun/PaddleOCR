@@ -65,7 +65,7 @@ def main(config, device, logger, vdl_writer):
     else:
         valid_dataloader = None
 
-    # build post process,初始化后处理函数，来自yml中的PostProcess变量
+    # build post process,初始化后处理函数
     post_process_class = build_post_process(config['PostProcess'],
                                             global_config)
 
